@@ -9,13 +9,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -56,7 +62,7 @@ class BookControllerTest {
         when(bookService.getBook(2)).thenReturn(builder);
 
         //when
-        DataResponse<?> response = bookService.getBook(2);
+        DataResponse<Object> response = bookService.getBook(2);
         mockMvc.perform(get("/api/book/id/{bookId}", bookModel.getBookId()))
 
         //then
@@ -72,6 +78,32 @@ class BookControllerTest {
         verify(bookService, times(2)).getBook(2);
 
     }
+
+
+    @Test
+    void whenInvalidBookId_thenShouldReturn404() throws Exception {
+        //given
+        when(bookService.getBook(3)).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        //DataResponse<Object> response = bookService.getBook(3);
+
+        //when
+        MockHttpServletResponse response = mockMvc.perform(get("/api/book/id/{bookId}", 3)
+                //.andExpect(status().is4xxClientError());
+                .accept(MediaType.APPLICATION_JSON))
+                .andReturn()
+                .getResponse();
+
+        //assertEquals(builder, response);
+
+        //then
+        verify(bookService, times(1)).getBook(3);
+        assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(response.getContentAsString()).isEmpty();
+
+    }
+
+
 
 
 

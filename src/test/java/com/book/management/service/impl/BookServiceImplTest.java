@@ -73,34 +73,32 @@ class BookServiceImplTest {
         log.info(response.toString());
     }
 
-    /*
+
     @Test
     void whenInvalidBookId_thenShouldReturn404() {
-        DataResponse<Object> dataBook = DataResponse.builder()
-                .data(BookResponse.builder()
-                        .bookId(bookModel.getBookId())
-                        .isbn(bookModel.getIsbn())
-                        .bookTitle(bookModel.getBookTitle())
-                        .bookAuthor(bookModel.getBookAuthor())
-                        .build())
-                .build();
+        String message = null;
 
         //given
         when(bookRepository.findById(3)).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
                 //Optional.of(new Book()));
 
         //when
-        DataResponse<Object> response = bookServiceImpl.getBook(3);
+        try{
+            DataResponse<Object> response = bookServiceImpl.getBook(3);
+        } catch (Exception e) {
+            message = e.getMessage();
+        }
 
         //then
-        //verify(bookRepository, times(1)).findById(3);
+        verify(bookRepository, times(1)).findById(3);
+        assertEquals(message, "404 NOT_FOUND");
         //assertThrows()
         //assertEquals(response, new ResponseStatusException(HttpStatus.NOT_FOUND));
                 //.isNull();
         //assertFalse(response.toString().isEmpty());
 
         //System.out.println(response);
-        log.info(response.toString());
+        //log.info(response.toString());
     }
-     */
+
 }
