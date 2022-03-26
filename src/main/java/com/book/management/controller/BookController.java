@@ -25,7 +25,7 @@ public class BookController {
   @PostMapping("/add")
   @Operation(summary = "Add one book", operationId = "Add One Book")
   public DataResponse<?> addBook(@Valid @RequestBody AddBookRequest addBookRequest) {
-    log.info("Invoking get on /api/book/add route");
+    log.info("Invoking post on /api/book/add route");
     return bookService.addBook(addBookRequest);
   }
 
@@ -39,7 +39,7 @@ public class BookController {
   @GetMapping("/id/{bookId}")
   @Operation(summary = "Get book from bookId", operationId = "Get Book")
   public DataResponse<Object> getBook(@PathVariable(value="bookId") Integer bookId) {
-    log.info("Invoking get on /api/book/{bookId} route");
+    log.info("Invoking get on /api/book/id/{bookId} route");
     return bookService.getBook(bookId);
   }
 

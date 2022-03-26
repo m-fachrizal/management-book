@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -55,7 +56,7 @@ class BookControllerTest {
         when(bookService.getBook(2)).thenReturn(builder);
 
         //when
-        DataResponse<Object> response = bookService.getBook(2);
+        DataResponse<?> response = bookService.getBook(2);
         mockMvc.perform(get("/api/book/id/{bookId}", bookModel.getBookId()))
 
         //then

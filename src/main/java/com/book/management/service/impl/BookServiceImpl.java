@@ -41,7 +41,7 @@ public class BookServiceImpl implements BookService {
             .bookAuthor(addBook.getBookAuthor())
             .build();
 
-    log.info("Book record with bookId {} found and updated !", addBook.getBookId());
+    log.info("Book added successfully");
 
     return DataResponse.builder()
             .data(bookResponse)
@@ -128,7 +128,7 @@ public class BookServiceImpl implements BookService {
 
     bookRepository.delete(bookModel);
     String bookResponse = "Successfully Delete Book with bookId " + bookId;
-    log.info("Successfully Delete Book with bookId {}", bookId);
+    log.info("Successfully delete book with bookId {}", bookId);
     return DataResponse.builder()
             .data(bookResponse)
             .build();
