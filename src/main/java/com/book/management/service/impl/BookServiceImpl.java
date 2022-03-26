@@ -1,6 +1,7 @@
 package com.book.management.service.impl;
 
 import com.book.management.dto.request.AddBookRequest;
+import com.book.management.dto.request.GetBooksFromAuthorRequest;
 import com.book.management.dto.response.BookResponse;
 import com.book.management.dto.request.UpdateBookRequest;
 import com.book.management.dto.response.DataResponse;
@@ -25,7 +26,7 @@ public class BookServiceImpl implements BookService {
   private BookRepository bookRepository;
 
   @Override
-  public DataResponse<?> addBook(AddBookRequest addBookRequest){
+  public DataResponse<Object> addBook(AddBookRequest addBookRequest){
     Book bookModel = Book.builder()
             .isbn(addBookRequest.getIsbn())
             .bookTitle(addBookRequest.getBookTitle())
@@ -49,7 +50,7 @@ public class BookServiceImpl implements BookService {
   }
 
   @Override
-  public DataResponse<?> getAllBooks() {
+  public DataResponse<Object> getAllBooks() {
     Iterable<Book> bookModel = bookRepository.findAll();
     List<BookResponse> bookResponses = new ArrayList<>();
     bookModel.forEach(
@@ -96,7 +97,7 @@ public class BookServiceImpl implements BookService {
   }
 
   @Override
-  public DataResponse<?> updateBook(UpdateBookRequest updateBookRequest){
+  public DataResponse<Object> updateBook(UpdateBookRequest updateBookRequest){
     Book bookModel = bookRepository.findById(updateBookRequest.getBookId()).orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -122,7 +123,7 @@ public class BookServiceImpl implements BookService {
   }
 
   @Override
-  public DataResponse<?> deleteBook(Integer bookId) {
+  public DataResponse<Object> deleteBook(Integer bookId) {
     Book bookModel = bookRepository.findById(bookId).orElseThrow(() ->
             new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -132,6 +133,68 @@ public class BookServiceImpl implements BookService {
     return DataResponse.builder()
             .data(bookResponse)
             .build();
+  }
+
+  @Override
+  public DataResponse<Object> getBooksFromAuthor(GetBooksFromAuthorRequest getBooksFromAuthorRequest) {
+    List<Book> bookModel = bookRepository.getBooksFromAuthor(getBooksFromAuthorRequest.getBookAuthor());
+    List<BookResponse> bookResponses = new ArrayList<>();
+    bookModel.forEach(
+            data -> bookResponses.add(BookResponse.builder()
+                    .bookId(data.getBookId())
+                    .isbn(data.getIsbn())
+                    .bookTitle(data.getBookTitle())
+                    .bookAuthor(data.getBookAuthor())
+                    .build())
+    );
+
+    long test = bookModel.spliterator().getExactSizeIfKnown();
+    int test2 = bookResponses.size();
+    log.info("bookModel size: " + test);
+    log.info("bookResponse size: " + test2);
+
+    //if(bookResponses.isEmpty()){
+    //String message = "There is no book right now.";
+    //return DataResponse.builder()
+    //              .data(message)
+    //              .build();
+    //} else {
+    log.info("All Book record found");
+    return DataResponse.builder()
+            .data(bookResponses)
+            .build();
+    //}
+  }
+
+  @Override
+  public DataResponse<Object> findAllBooksOrderByIsbn() {
+    List<Book> bookModel = bookRepository.findAllBooksOrderByIsbn();
+    List<BookResponse> bookResponses = new ArrayList<>();
+    bookModel.forEach(
+            data -> bookResponses.add(BookResponse.builder()
+                    .bookId(data.getBookId())
+                    .isbn(data.getIsbn())
+                    .bookTitle(data.getBookTitle())
+                    .bookAuthor(data.getBookAuthor())
+                    .build())
+    );
+
+    long test = bookModel.spliterator().getExactSizeIfKnown();
+    int test2 = bookResponses.size();
+    log.info("bookModel size: " + test);
+    log.info("bookResponse size: " + test2);
+
+    //if(bookResponses.isEmpty()){
+    //String message = "There is no book right now.";
+    //return DataResponse.builder()
+    //              .data(message)
+    //              .build();
+    //} else {
+    log.info("All Book record found");
+    return DataResponse.builder()
+            .data(bookResponses)
+            .build();
+    //}
   }
 
 }

@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 
@@ -17,7 +18,8 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
+@NamedQuery(name = "Book.getBooksFromAuthor",
+        query = "select b from Book b where b.bookAuthor = ?1")
 public class Book {
 
   @CreationTimestamp
@@ -32,7 +34,7 @@ public class Book {
   private Integer bookId;
 
   @Column
-  private Integer isbn;
+  private Long isbn;
 
   @Column
   private String bookTitle;

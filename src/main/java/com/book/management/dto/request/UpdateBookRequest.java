@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.math.BigInteger;
 
 
 @Data
@@ -13,7 +14,7 @@ public class UpdateBookRequest {
   private Integer bookId;
 
   @NotNull
-  private Integer isbn;
+  private Long isbn;
 
   @NotBlank
   private String bookTitle;

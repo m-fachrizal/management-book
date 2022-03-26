@@ -42,7 +42,7 @@ class BookControllerTest {
                 LocalDateTime.parse("2022-01-02T14:06:59.972177"),
                 LocalDateTime.parse("2022-01-02T14:06:59.972177"),
                 2,
-                123456,
+                123456L,
                 "The Alchemist",
                 "Paulo Coelho");
     }

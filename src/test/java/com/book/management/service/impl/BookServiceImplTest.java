@@ -11,6 +11,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -39,14 +42,14 @@ class BookServiceImplTest {
                 LocalDateTime.now(),
                 LocalDateTime.now(),
                 2,
-                123456,
+                123456L,
                 "The Alchemist",
                 "Paulo Coelho");
     }
 
     @Test
     void whenValidBookId_thenBookShouldBeFound() {
-        DataResponse<?> dataBook = DataResponse.builder()
+        DataResponse<Object> dataBook = DataResponse.builder()
                 .data(BookResponse.builder()
                         .bookId(bookModel.getBookId())
                         .isbn(bookModel.getIsbn())
@@ -59,7 +62,7 @@ class BookServiceImplTest {
         when(bookRepository.findById(2)).thenReturn(Optional.of(bookModel));
 
         //when
-        DataResponse<?> response = bookServiceImpl.getBook(2);
+        DataResponse<Object> response = bookServiceImpl.getBook(2);
 
         //then
         verify(bookRepository, times(1)).findById(2);
@@ -69,4 +72,35 @@ class BookServiceImplTest {
         //System.out.println(response);
         log.info(response.toString());
     }
+
+    /*
+    @Test
+    void whenInvalidBookId_thenShouldReturn404() {
+        DataResponse<Object> dataBook = DataResponse.builder()
+                .data(BookResponse.builder()
+                        .bookId(bookModel.getBookId())
+                        .isbn(bookModel.getIsbn())
+                        .bookTitle(bookModel.getBookTitle())
+                        .bookAuthor(bookModel.getBookAuthor())
+                        .build())
+                .build();
+
+        //given
+        when(bookRepository.findById(3)).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+                //Optional.of(new Book()));
+
+        //when
+        DataResponse<Object> response = bookServiceImpl.getBook(3);
+
+        //then
+        //verify(bookRepository, times(1)).findById(3);
+        //assertThrows()
+        //assertEquals(response, new ResponseStatusException(HttpStatus.NOT_FOUND));
+                //.isNull();
+        //assertFalse(response.toString().isEmpty());
+
+        //System.out.println(response);
+        log.info(response.toString());
+    }
+     */
 }
