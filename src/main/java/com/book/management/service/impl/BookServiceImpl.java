@@ -62,10 +62,8 @@ public class BookServiceImpl implements BookService {
                             .build())
     );
 
-    long test = bookModel.spliterator().getExactSizeIfKnown();
-    int test2 = bookResponses.size();
-    log.info("bookModel size: " + test);
-    log.info("bookResponse size: " + test2);
+    int bookTotal = bookResponses.size();
+    log.info("There are {} book found", bookTotal);
 
     //if(bookResponses.isEmpty()){
       //String message = "There is no book right now.";
