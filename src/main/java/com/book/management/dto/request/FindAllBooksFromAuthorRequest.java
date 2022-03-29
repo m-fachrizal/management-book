@@ -1,11 +1,15 @@
 package com.book.management.dto.request;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 
 @Data
-public class GetBooksFromAuthorRequest {
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class FindAllBooksFromAuthorRequest {
+
     @NotBlank
     private String bookAuthor;
 }

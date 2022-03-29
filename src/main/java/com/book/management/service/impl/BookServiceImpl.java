@@ -1,7 +1,7 @@
 package com.book.management.service.impl;
 
 import com.book.management.dto.request.AddBookRequest;
-import com.book.management.dto.request.GetBooksFromAuthorRequest;
+import com.book.management.dto.request.FindAllBooksFromAuthorRequest;
 import com.book.management.dto.response.BookResponse;
 import com.book.management.dto.request.UpdateBookRequest;
 import com.book.management.dto.response.DataResponse;
@@ -27,26 +27,35 @@ public class BookServiceImpl implements BookService {
 
   @Override
   public DataResponse<Object> addBook(AddBookRequest addBookRequest){
-    Book bookModel = Book.builder()
-            .isbn(addBookRequest.getIsbn())
-            .bookTitle(addBookRequest.getBookTitle())
-            .bookAuthor(addBookRequest.getBookAuthor())
-            .build();
+    Book checkBook = bookRepository.findByIsbn(addBookRequest.getIsbn()).orElse(null);
+    if(checkBook != null){
+      String message = "Book with isbn " + addBookRequest.getIsbn() + " already exist";
+      log.info(message);
+      return DataResponse.builder()
+              .data(message)
+              .build();
+    } else {
+      Book bookModel = Book.builder()
+              .isbn(addBookRequest.getIsbn())
+              .bookTitle(addBookRequest.getBookTitle())
+              .bookAuthor(addBookRequest.getBookAuthor())
+              .build();
 
-    Book addBook = bookRepository.save(bookModel);
+      Book addBook = bookRepository.save(bookModel);
 
-    BookResponse bookResponse = BookResponse.builder()
-            .bookId(addBook.getBookId())
-            .isbn(addBook.getIsbn())
-            .bookTitle(addBook.getBookTitle())
-            .bookAuthor(addBook.getBookAuthor())
-            .build();
+      BookResponse bookResponse = BookResponse.builder()
+              .bookId(addBook.getBookId())
+              .isbn(addBook.getIsbn())
+              .bookTitle(addBook.getBookTitle())
+              .bookAuthor(addBook.getBookAuthor())
+              .build();
 
-    log.info("Book added successfully");
+      log.info("Book added successfully");
 
-    return DataResponse.builder()
-            .data(bookResponse)
-            .build();
+      return DataResponse.builder()
+              .data(bookResponse)
+              .build();
+    }
   }
 
   @Override
@@ -65,17 +74,10 @@ public class BookServiceImpl implements BookService {
     int bookTotal = bookResponses.size();
     log.info("There are {} book found", bookTotal);
 
-    //if(bookResponses.isEmpty()){
-      //String message = "There is no book right now.";
-      //return DataResponse.builder()
-      //              .data(message)
-      //              .build();
-    //} else {
-      log.info("All Book record found");
-      return DataResponse.builder()
-              .data(bookResponses)
-              .build();
-    //}
+    log.info("All Book record found");
+    return DataResponse.builder()
+            .data(bookResponses)
+            .build();
   }
 
   @Override
@@ -99,7 +101,6 @@ public class BookServiceImpl implements BookService {
     Book bookModel = bookRepository.findById(updateBookRequest.getBookId()).orElseThrow(() ->
       new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-    bookModel.setBookId(updateBookRequest.getBookId());
     bookModel.setIsbn(updateBookRequest.getIsbn());
     bookModel.setBookTitle(updateBookRequest.getBookTitle());
     bookModel.setBookAuthor(updateBookRequest.getBookAuthor());
@@ -134,8 +135,8 @@ public class BookServiceImpl implements BookService {
   }
 
   @Override
-  public DataResponse<Object> getBooksFromAuthor(GetBooksFromAuthorRequest getBooksFromAuthorRequest) {
-    List<Book> bookModel = bookRepository.getBooksFromAuthor(getBooksFromAuthorRequest.getBookAuthor());
+  public DataResponse<Object> findAllBooksFromAuthor(FindAllBooksFromAuthorRequest findAllBooksFromAuthorRequest) {
+    List<Book> bookModel = bookRepository.findAllBooksFromAuthor(findAllBooksFromAuthorRequest.getBookAuthor());
     List<BookResponse> bookResponses = new ArrayList<>();
     bookModel.forEach(
             data -> bookResponses.add(BookResponse.builder()
@@ -146,22 +147,12 @@ public class BookServiceImpl implements BookService {
                     .build())
     );
 
-    long test = bookModel.spliterator().getExactSizeIfKnown();
-    int test2 = bookResponses.size();
-    log.info("bookModel size: " + test);
-    log.info("bookResponse size: " + test2);
+    int bookTotal = bookResponses.size();
+    log.info("There are {} book found from author {}", bookTotal, findAllBooksFromAuthorRequest.getBookAuthor());
 
-    //if(bookResponses.isEmpty()){
-    //String message = "There is no book right now.";
-    //return DataResponse.builder()
-    //              .data(message)
-    //              .build();
-    //} else {
-    log.info("All Book record found");
     return DataResponse.builder()
             .data(bookResponses)
             .build();
-    //}
   }
 
   @Override
@@ -177,22 +168,12 @@ public class BookServiceImpl implements BookService {
                     .build())
     );
 
-    long test = bookModel.spliterator().getExactSizeIfKnown();
-    int test2 = bookResponses.size();
-    log.info("bookModel size: " + test);
-    log.info("bookResponse size: " + test2);
+    int bookTotal = bookResponses.size();
+    log.info("There are {} book found", bookTotal);
 
-    //if(bookResponses.isEmpty()){
-    //String message = "There is no book right now.";
-    //return DataResponse.builder()
-    //              .data(message)
-    //              .build();
-    //} else {
-    log.info("All Book record found");
     return DataResponse.builder()
             .data(bookResponses)
             .build();
-    //}
   }
 
 }

@@ -10,8 +10,9 @@ import java.util.Optional;
 
 @Repository
 public interface BookRepository extends CrudRepository<Book, Integer> {
+  Optional<Book> findByIsbn(Long isbn);
 
-  List<Book> getBooksFromAuthor(String bookAuthor);
+  List<Book> findAllBooksFromAuthor(String bookAuthor);
 
   @Query(value = "SELECT * FROM BOOK ORDER  BY ISBN DESC ", nativeQuery = true)
   List<Book> findAllBooksOrderByIsbn();

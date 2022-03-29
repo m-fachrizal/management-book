@@ -1,7 +1,7 @@
 package com.book.management.controller;
 
 import com.book.management.dto.request.AddBookRequest;
-import com.book.management.dto.request.GetBooksFromAuthorRequest;
+import com.book.management.dto.request.FindAllBooksFromAuthorRequest;
 import com.book.management.dto.request.UpdateBookRequest;
 import com.book.management.dto.response.DataResponse;
 import com.book.management.service.BookService;
@@ -58,11 +58,11 @@ public class BookController {
     return bookService.deleteBook(bookId);
   }
 
-  @GetMapping("/author")
+  @PostMapping("/author")
   @Operation(summary = "Get all books from author name", operationId = "Get All Books From Author Name")
-  public DataResponse<Object> getBooksFromAuthor(@Valid @RequestBody GetBooksFromAuthorRequest getBooksFromAuthorRequest) {
-    log.info("Invoking get on /api/book/author route");
-    return bookService.getBooksFromAuthor(getBooksFromAuthorRequest);
+  public DataResponse<Object> findAllBooksFromAuthor(@Valid @RequestBody FindAllBooksFromAuthorRequest findAllBooksFromAuthorRequest) {
+    log.info("Invoking post on /api/book/author route");
+    return bookService.findAllBooksFromAuthor(findAllBooksFromAuthorRequest);
   }
 
   @GetMapping("/ordered-isbn")
