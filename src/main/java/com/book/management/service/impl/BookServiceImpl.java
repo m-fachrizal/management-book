@@ -123,10 +123,10 @@ public class BookServiceImpl implements BookService {
 
   @Override
   public DataResponse<Object> deleteBook(Integer bookId) {
-    Book bookModel = bookRepository.findById(bookId).orElseThrow(() ->
+    bookRepository.findById(bookId).orElseThrow(() ->
             new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-    bookRepository.delete(bookModel);
+    bookRepository.deleteById(bookId);
     String bookResponse = "Successfully Delete Book with bookId " + bookId;
     log.info("Successfully delete book with bookId {}", bookId);
     return DataResponse.builder()

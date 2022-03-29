@@ -18,9 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -304,7 +302,7 @@ class BookServiceImplTest {
 
     //test updateBook method when fail
     @Test
-    void updateBook_failBookNotFound() {
+    void updateBook_failBookIdNotFound() {
         //create add book request object
         UpdateBookRequest updateBookRequest = UpdateBookRequest.builder()
                 .bookId(100)
@@ -333,6 +331,7 @@ class BookServiceImplTest {
     //test deleteBook method when success
     @Test
     void deleteBook_success() {
+        //simulate data response for return object to be compared
         String bookResponse = "Successfully Delete Book with bookId " + bookModel.getBookId();
         DataResponse<Object> dataBook = DataResponse.builder()
                 .data(bookResponse)
@@ -346,7 +345,7 @@ class BookServiceImplTest {
 
         //then
         verify(bookRepository, times(1)).findById(bookModel.getBookId());
-        verify(bookRepository, times(1)).delete(bookModel);
+        verify(bookRepository, times(1)).deleteById(bookModel.getBookId());
         assertFalse(response.toString().isEmpty());
         assertEquals(response, dataBook);
 
