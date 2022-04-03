@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -20,11 +22,13 @@ import java.util.List;
 
 @Slf4j
 @Service
+//@Transactional
 public class BookServiceImpl implements BookService {
 
   @Autowired
   private BookRepository bookRepository;
 
+  //@Transactional(readOnly = true)
   @Override
   public DataResponse<Object> addBook(AddBookRequest addBookRequest){
     Book checkBook = bookRepository.findByIsbn(addBookRequest.getIsbn()).orElse(null);
@@ -80,10 +84,10 @@ public class BookServiceImpl implements BookService {
             .build();
   }
 
+  @Transactional(propagation = Propagation.REQUIRED)
   @Override
   public DataResponse<Object> getBook(Integer id) {
-    Book bookModel = bookRepository.findById(id).orElseThrow(() ->
-      new ResponseStatusException(HttpStatus.NOT_FOUND));
+    Book bookModel = findBookById(id);
     log.info("Book record with bookId {} found", id);
     BookResponse bookResponse = BookResponse.builder()
             .bookId(bookModel.getBookId())
@@ -96,16 +100,24 @@ public class BookServiceImpl implements BookService {
             .build();
   }
 
+  @Transactional(propagation = Propagation.MANDATORY)
+  public Book findBookById(Integer id){
+    log.info("findBookById method is called");
+    return bookRepository.findById(id).orElseThrow(() ->
+            new ResponseStatusException(HttpStatus.NOT_FOUND));
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED)
   @Override
   public DataResponse<Object> updateBook(UpdateBookRequest updateBookRequest){
-    Book bookModel = bookRepository.findById(updateBookRequest.getBookId()).orElseThrow(() ->
-      new ResponseStatusException(HttpStatus.NOT_FOUND));
+    Book bookModel = findBookById(updateBookRequest.getBookId());
 
     bookModel.setIsbn(updateBookRequest.getIsbn());
     bookModel.setBookTitle(updateBookRequest.getBookTitle());
     bookModel.setBookAuthor(updateBookRequest.getBookAuthor());
 
     Book updateBook = bookRepository.save(bookModel);
+    //System.out.println(100/0);
 
     BookResponse bookResponse = BookResponse.builder()
             .bookId(updateBook.getBookId())
@@ -121,14 +133,14 @@ public class BookServiceImpl implements BookService {
             .build();
   }
 
+  @Transactional(propagation = Propagation.REQUIRED)
   @Override
   public DataResponse<Object> deleteBook(Integer bookId) {
-    bookRepository.findById(bookId).orElseThrow(() ->
-            new ResponseStatusException(HttpStatus.NOT_FOUND));
+    findBookById(bookId);
 
     bookRepository.deleteById(bookId);
     String bookResponse = "Successfully Delete Book with bookId " + bookId;
-    log.info("Successfully delete book with bookId {}", bookId);
+    log.info(bookResponse);
     return DataResponse.builder()
             .data(bookResponse)
             .build();

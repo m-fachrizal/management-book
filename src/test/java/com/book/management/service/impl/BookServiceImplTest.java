@@ -93,6 +93,43 @@ class BookServiceImplTest {
         assertEquals(message, HttpStatus.NOT_FOUND.toString());
     }
 
+    //test findBookById method when success
+    @Test
+    void findBookById_success() {
+
+        //given
+        when(bookRepository.findById(bookModel.getBookId())).thenReturn(Optional.of(bookModel));
+
+        //when
+        Book response = bookServiceImpl.findBookById(bookModel.getBookId());
+
+        //then
+        verify(bookRepository, times(1)).findById(bookModel.getBookId());
+        assertFalse(response.toString().isEmpty());
+        assertEquals(response, bookModel);
+
+    }
+
+    //test findBookById method when fail
+    @Test
+    void findBookById_bookNotFound() {
+        //given
+        when(bookRepository.findById(3)).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        //when
+        try{
+            Book response = bookServiceImpl.findBookById(3);
+        } catch (Exception e) {
+            message = e.getMessage();
+            log.info(message);
+        }
+
+        //then
+        verify(bookRepository, times(1)).findById(3);
+        assertEquals(message, HttpStatus.NOT_FOUND.toString());
+
+    }
+
     //test addBook method when success
     @Test
     void addBook_success() {
@@ -286,8 +323,7 @@ class BookServiceImplTest {
                 .build();
 
         //given
-        when(bookRepository.findById(updateBookRequest.getBookId()))
-                .thenReturn(Optional.of(bookModel));
+        when(bookRepository.findById(updateBookRequest.getBookId())).thenReturn(Optional.of(bookModel));
         when(bookRepository.save(bookModel)).thenReturn(bookModel);
 
         //when
