@@ -186,7 +186,7 @@ class BookControllerTest {
 
     }
 
-    //test addBook method when success
+    //test addBook method when fail because book already exist
     @Test
     void addBook_failBookAlreadyExist() throws Exception {
         //create add book request object
@@ -248,7 +248,7 @@ class BookControllerTest {
                                 .bookAuthor(data.getBookAuthor())
                                 .build())
         );
-        //simulate data response for return object to be compared
+        //simulate data response for return object
         DataResponse<Object> dataResponse = DataResponse.builder()
                 .data(bookResponseList)
                 .build();
@@ -459,7 +459,7 @@ class BookControllerTest {
                                 .build())
         );
 
-        //simulate data response for return object to be compared
+        //simulate data response for return object
         DataResponse<Object> dataResponse = DataResponse.builder()
                 .data(bookResponseList)
                 .build();
@@ -498,7 +498,7 @@ class BookControllerTest {
                 .build();
         List<BookResponse> bookList = new ArrayList<>();
 
-        //simulate data response for return object to be compared
+        //simulate data response for return object
         DataResponse<Object> dataResponse = DataResponse.builder()
                 .data(bookList)
                 .build();
@@ -547,7 +547,7 @@ class BookControllerTest {
                                 .build())
         );
 
-        //simulate data response for return object to be compared
+        //simulate data response for return object
         DataResponse<Object> dataResponse = DataResponse.builder()
                 .data(bookResponseList)
                 .build();
@@ -579,7 +579,7 @@ class BookControllerTest {
     void findAllBooksOrderByIsbn_noRecord() throws Exception {
         List<BookResponse> bookList = new ArrayList<>();
 
-        //simulate data response for return object to be compared
+        //simulate data response for return object
         DataResponse<Object> dataResponse = DataResponse.builder()
                 .data(bookList)
                 .build();

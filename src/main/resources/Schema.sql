@@ -1,5 +1,3 @@
-/*DROP DATABASE IF EXISTS book;
-CREATE DATABASE book;*/
 DROP TABLE IF EXISTS book;
 CREATE TABLE book (
     created_date timestamp NOT NULL,

@@ -73,7 +73,7 @@ class BookServiceImplTest {
 
     }
 
-    //test getBook method when fail
+    //test getBook method when fail because book not found
     @Test
     void getBook_bookNotFound() {
 
@@ -82,7 +82,7 @@ class BookServiceImplTest {
 
         //when
         try{
-            DataResponse<Object> response = bookServiceImpl.getBook(3);
+            bookServiceImpl.getBook(3);
         } catch (Exception e) {
             message = e.getMessage();
             log.info(message);
@@ -110,7 +110,7 @@ class BookServiceImplTest {
 
     }
 
-    //test findBookById method when fail
+    //test findBookById method when fail because book not found
     @Test
     void findBookById_bookNotFound() {
         //given
@@ -118,7 +118,7 @@ class BookServiceImplTest {
 
         //when
         try{
-            Book response = bookServiceImpl.findBookById(3);
+            bookServiceImpl.findBookById(3);
         } catch (Exception e) {
             message = e.getMessage();
             log.info(message);
@@ -148,10 +148,12 @@ class BookServiceImplTest {
                 .build();
         //simulate book object after calling save method from repository
         Book savedBook = Book.builder()
+                .createdDate(LocalDateTime.now())
+                .updatedDate(LocalDateTime.now())
                 .bookId(2)
-                .isbn(bookModel.getIsbn())
-                .bookTitle(bookModel.getBookTitle())
-                .bookAuthor(bookModel.getBookAuthor())
+                .isbn(addBookRequest.getIsbn())
+                .bookTitle(addBookRequest.getBookTitle())
+                .bookAuthor(addBookRequest.getBookAuthor())
                 .build();
 
         //simulate data response for return object to be compared
@@ -195,7 +197,7 @@ class BookServiceImplTest {
 
         //when
         try{
-            DataResponse<Object> response = bookServiceImpl.addBook(addBookRequest);
+            bookServiceImpl.addBook(addBookRequest);
         } catch (Exception e) {
             message = e.getMessage();
             log.info(message);
@@ -353,7 +355,7 @@ class BookServiceImplTest {
 
         //when
         try{
-            DataResponse<Object> response = bookServiceImpl.updateBook(updateBookRequest);
+            bookServiceImpl.updateBook(updateBookRequest);
         } catch (Exception e) {
             message = e.getMessage();
             log.info(message);
@@ -396,7 +398,7 @@ class BookServiceImplTest {
 
         //when
         try{
-            DataResponse<Object> response = bookServiceImpl.deleteBook(100);
+            bookServiceImpl.deleteBook(100);
         } catch (Exception e) {
             message = e.getMessage();
             log.info(message);

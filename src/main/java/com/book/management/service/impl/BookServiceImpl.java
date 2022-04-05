@@ -22,13 +22,11 @@ import java.util.List;
 
 @Slf4j
 @Service
-//@Transactional
 public class BookServiceImpl implements BookService {
 
   @Autowired
   private BookRepository bookRepository;
 
-  //@Transactional(readOnly = true)
   @Override
   public DataResponse<Object> addBook(AddBookRequest addBookRequest){
     Book checkBook = bookRepository.findByIsbn(addBookRequest.getIsbn()).orElse(null);
